@@ -173,41 +173,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         func didBegin(_ contact: SKPhysicsContact) {
-            // ask each brick "is it you"
+            // ask each brick, "Is it you?"
             for brick in bricks {
                 if contact.bodyA.node == brick ||
                     contact.bodyB.node == brick {
                     score += 1
+                    // increase ball velocity by 2%
+                    ball.physicsBody!.velocity.dx *= CGFloat(1.02)
+                    ball.physicsBody!.velocity.dy *= CGFloat(1.02)
                     updateLabels()
-                    brick.removeFromParent()
-                    removedBricks += 1
-                    if removedBricks == bricks.count {
-                        gameOver(winner: true)
+                    if brick.color == .blue {
+                        brick.color = .orange   // blue bricks turn orange
+                    }
+                    else if brick.color == .orange {
+                        brick.color = .green    // orange bricks turn green
+                    }
+                    else {  // must be a green brick, which get removed
+                        brick.removeFromParent()
+                        removedBricks += 1
+                        if removedBricks == bricks.count {
+                            gameOver(winner: true)
+                        }
+                    }
+                }
+                if contact.bodyA.node?.name == "loseZone" ||
+                    contact.bodyB.node?.name == "loseZone" {
+                    lives -= 1
+                    if lives > 0 {
+                        score = 0
+                        resetGame()
+                        kickBall()
+                    }
+                    else {
+                        gameOver(winner: false)
                     }
                 }
             }
-            if contact.bodyA.node?.name == "loseZone" ||
-                contact.bodyB.node?.name == "loseZone" {
-                lives -= 1
-                if lives > 0 {
-                    score = 0
-                    resetGame()
-                    kickBall()
+            func gameOver(winner: Bool) {
+                playingGame = false
+                playLabel.alpha = 1
+                resetGame()
+                if winner {
+                    playLabel.text = "You win! Tap to play again"
                 }
                 else {
-                    gameOver(winner: false)
+                    playLabel.text = "You lose! Tap to play again"
                 }
-            }
-        }
-        func gameOver(winner: Bool) {
-            playingGame = false
-            playLabel.alpha = 1
-            resetGame()
-            if winner {
-                playLabel.text = "You win! Tap to play again"
-            }
-            else {
-                playLabel.text = "You lose! Tap to play again"
             }
         }
     }
