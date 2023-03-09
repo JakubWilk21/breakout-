@@ -39,7 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func kickBall() {
         ball.physicsBody?.isDynamic = true
-        ball.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 5))
+        ball.physicsBody?.applyImpulse(CGVector(dx: Int.random(in: -5...5), dy: 5))
     }
     func updateLabels() {
         scoresLabel.text = "Score: \(score)"
@@ -193,6 +193,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         removedBricks += 1
                         if removedBricks == bricks.count {
                             gameOver(winner: true)
+
                         }
                     }
                 }
