@@ -161,15 +161,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         func didBegin(_ contact: SKPhysicsContact) {
             if contact.bodyA.node == brick ||
                 contact.bodyB.node == brick {
-                print("You Win")
-                brick.removeFromParent()
-                ball.removeFromParent()
+                gameOver(winner: true)
             }
             if contact.bodyA.node?.name == "loseZone" ||
                 contact.bodyB.node?.name == "loseZone" {
-                print("You Lose!")
-                ball.removeFromParent()
+                gameOver(winner: false)
             }
+        }
+    }
+    func gameOver(winner: Bool) {
+        playingGame = false
+        playLabel.alpha = 1
+        resetGame()
+        if winner {
+            playLabel.text = "You win! Tap to play again"
+        }
+        else {
+            playLabel.text = "You lose! Tap to play again"
         }
     }
 }
